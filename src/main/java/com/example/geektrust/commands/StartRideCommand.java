@@ -22,6 +22,7 @@ public class StartRideCommand implements ICommand{
         Riding riding = new Riding();
         riding.setRideId(tokens.get(0));
         riding.setDriverNo(Integer.valueOf(tokens.get(1)));
+        riding.setRiding(true);
         riding.setRiderId(tokens.get(2));
         matchService.matchRider(tokens.get(2));
         riding.setRidingWithDriverId(riderService.findRider(tokens.get(2)).getDriversMatched().get(Integer.valueOf(tokens.get(1))-1).getDriverId());

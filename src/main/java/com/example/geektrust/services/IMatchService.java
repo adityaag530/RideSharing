@@ -8,4 +8,6 @@ import java.util.List;
 public interface IMatchService {
 
     void matchRider(String riderId);
+
+    void printMatchedDriver();
 }

@@ -7,10 +7,15 @@ import com.example.geektrust.repositories.IRiderRepository;
 
 import java.util.*;
 
+import static com.example.geektrust.constants.Constant.HUNDRED;
+import static com.example.geektrust.constants.Constant.MAX_KM;
+
 public class MatchService implements IMatchService{
 
     private final IRiderRepository riderRepository;
     private final IDriverRepository driverRepository;
+
+    private StringBuilder matchedDrivers;
 
     public MatchService(IRiderRepository riderRepository, IDriverRepository driverRepository) {
         this.riderRepository = riderRepository;
@@ -29,20 +34,27 @@ public class MatchService implements IMatchService{
         topDrivers.sort( Comparator.comparingDouble(  a -> Double.parseDouble(a[0]) ) );
         StringBuilder driverMatched = new StringBuilder("DRIVERS_MATCHED");
         for(String[] s: topDrivers){
-            if(Double.parseDouble( s[0])<5 ){
+            if(Double.parseDouble( s[0])<MAX_KM ){
                 driverMatched.append(" ").append(s[1]);
             }
         }
-        if(driverMatched.equals("DRIVERS_MATCHED")){
-            System.out.println("NO_DRIVER_AVAILABLE");
+        if(driverMatched.equals("DRIVERS_MATCHED") && topDrivers.size()==0){
+//            System.out.println("NO_DRIVER_AVAILABLE");
+            matchedDrivers = new StringBuilder("NO_DRIVER_AVAILABLE");
         }else{
-            System.out.println(driverMatched);
+//            System.out.println(driverMatched);
+            matchedDrivers = driverMatched;
+
             List<Driver> driversNearRider = new ArrayList<>();
             for(String[] s: topDrivers){
                 driversNearRider.add(driverRepository.findDriverById(s[1]));
             }
             rider.setDriversMatched(driversNearRider);
         }
+    }
+
+    public void printMatchedDriver(){
+        System.out.println(matchedDrivers);
     }
 
     public String[] findNearestDriver(Rider rider, Driver driver){
@@ -55,6 +67,6 @@ public class MatchService implements IMatchService{
     }
 
     public double findDistance(double diffOfX, double diffOfY){
-        return Math.round( Math.sqrt( (diffOfX * diffOfX) + (diffOfY * diffOfY) ) * 100)/100.0;
+        return Math.round(Math.sqrt((diffOfX * diffOfX) + (diffOfY * diffOfY)) * HUNDRED) /HUNDRED;
     }
 }

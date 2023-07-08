@@ -4,6 +4,8 @@ import com.example.geektrust.entities.Rider;
 import com.example.geektrust.entities.Riding;
 import com.example.geektrust.repositories.IRiderRepository;
 
+import static com.example.geektrust.constants.Constant.*;
+
 public class RiderService implements IRiderService{
     @Override
     public Rider findRiderByRidingId(String s) {
@@ -47,16 +49,16 @@ public class RiderService implements IRiderService{
 //        A service tax of 20% is added to the final amount.
 
         double bill;
-        bill = 50.0 + 6.5 * calculateDistance(rider) + 2*rider.getRides().getTimeInMinutes();
-        bill = bill + bill*0.2;
+        bill = BASE_FARE + PER_KM_RATE * calculateDistance(rider) + PER_MIN_RATE * rider.getRides().getTimeInMinutes();
+        bill = bill + bill * SERVICE_TAX;
         rider.getRides().setBill(bill);
     }
 
     public double calculateDistance(Rider rider){
         double distance = Math.round(
                 Math.sqrt(
-                        Math.pow(rider.getX_coordinate_of_rider() - rider.getRides().getDropLocation()[0], 2) + Math.pow(rider.getX_coordinate_of_rider() - rider.getRides().getDropLocation()[0], 2)
-                )*100 ) / 100;
+                        Math.pow(rider.getX_coordinate_of_rider() - rider.getRides().getDropLocation()[0], PER_MIN_RATE) + Math.pow(rider.getY_coordinate_of_rider() - rider.getRides().getDropLocation()[1], PER_MIN_RATE)
+                ) * HUNDRED) / HUNDRED;
         return distance;
     }
 

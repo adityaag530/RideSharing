@@ -17,5 +17,6 @@ public class MatchRiderCommand implements ICommand{
     @Override
     public void execute(List<String> tokens) {
         matchService.matchRider(tokens.get(0));
+        matchService.printMatchedDriver();
     }
 }
